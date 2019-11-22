@@ -1,0 +1,14 @@
+===============================================================================
+    Run this example
+===============================================================================
+Make sure that the STM32F103 board is connected. To test the connection, run:
+    
+    `make probe`
+
+Your device should shows up. To flash the blink program on the board, run:
+
+    `make flash`
+
+To delete the previous program on the STM32F103 board, run:
+
+    `make erase`
