@@ -7,16 +7,10 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
-#include <libopencm3/cm3/systick.h>
 
 /* Function prototpyes */
-void sys_tick_handler(void);
 static void clock_setup(void);
 static void usart_setup(void);
-static void systick_setup(void);
-
-uint64_t millis(void);
-void delay(uint64_t duration);
 
 static void clock_setup() {
     rcc_clock_setup_in_hse_8mhz_out_72mhz();
@@ -43,33 +37,9 @@ static void usart_setup() {
     usart_enable(USART1);
 }
 
-static void systick_setup() {
-    systick_set_clocksource(STK_CSR_CLKSOURCE_AHB);
-    STK_CVR = 0;
-    systick_set_reload(rcc_ahb_frequency / 1000 - 1);
-    systick_interrupt_enable();
-    systick_counter_enable();
-}
-
-static volatile uint64_t _millis = 0;
-
-uint64_t millis() {
-    return _millis;
-}
-
-void sys_tick_handler(void) {
-    _millis++;
-}
-
-void delay(uint64_t duration) {
-    const uint64_t until = millis() + duration;
-    while (millis() < until);
-}
-
 int main(void) {
     clock_setup();
     usart_setup();
-    systick_setup();
 
     while (1) {
         // Echo message in serial  
